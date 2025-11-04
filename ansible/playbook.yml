@@ -1,0 +1,32 @@
+- hosts: nodejs
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Install npm
+      apt:
+        name: npm
+        state: present
+
+    - name: Clone Node.js app
+      git:
+        repo: https://github.com/sanikaa5/nodejs-app-new.git
+        dest: /home/ubuntu/nodejs-app
+
+    - name: Build Docker image
+      command: docker build -t node-app /home/ubuntu/nodejs-app
+
+    - name: Run Docker container
+      command: docker run -d -p 3000:3000 node-app
